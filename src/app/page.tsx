@@ -1,5 +1,6 @@
 import About from "@/components/About";
 import Contact from "@/components/Contact";
+import Donate from "@/components/Donate";
 import Footer from "@/components/Footer";
 import GithubActivity from "@/components/GithubActivity";
 import Hero from "@/components/Hero";
@@ -23,6 +24,7 @@ export default function Home() {
         <Skills />
         <Projects />
         <GithubActivity />
+        <Donate />
         <Contact />
       </main>
       <Footer />

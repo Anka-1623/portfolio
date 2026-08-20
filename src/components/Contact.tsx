@@ -25,7 +25,7 @@ export default function Contact() {
         aria-hidden
         className="pointer-events-none absolute -left-6 top-16 select-none font-mono text-[10rem] font-semibold leading-none text-surface-2 sm:text-[14rem]"
       >
-        06
+        07
       </span>
       <div
         className="pointer-events-none absolute right-0 top-1/2 -z-10 h-[420px] w-[420px] -translate-y-1/2 translate-x-1/3 rounded-full opacity-20 blur-[120px]"
@@ -36,7 +36,7 @@ export default function Contact() {
         <div className="grid gap-12 sm:grid-cols-[minmax(0,220px)_1fr] sm:gap-16">
           <RevealOnScroll>
             <span className="font-mono text-xs tracking-[0.25em] text-accent">
-              06 — CONTACT
+              07 — CONTACT
             </span>
           </RevealOnScroll>
 
