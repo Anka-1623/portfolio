@@ -5,6 +5,8 @@ const FACTS = [
   { label: "Currently", value: "Building EduTask" },
   { label: "Approach", value: "Ship end-to-end, iterate on real usage" },
   { label: "Open to", value: "New ventures & collaborations" },
+  { label: "Team", value: "Stratos İHA — UAV team" },
+  { label: "Recognition", value: "TEKNOFEST 2026 finalist, Fight Against Addiction" },
 ];
 
 export default function About() {
@@ -47,7 +49,7 @@ export default function About() {
             </RevealOnScroll>
 
             <RevealOnScroll delay={0.18}>
-              <dl className="grid grid-cols-1 gap-6 border-t border-border pt-8 sm:grid-cols-2">
+              <dl className="grid grid-cols-1 gap-6 border-t border-border pt-8 sm:grid-cols-2 lg:grid-cols-3">
                 {FACTS.map((fact) => (
                   <div key={fact.label}>
                     <dt className="font-mono text-[11px] tracking-[0.2em] text-muted-2">

@@ -37,4 +37,14 @@ export const projects: Project[] = [
     stack: ["React", "Vite", "FastAPI", "Supabase"],
     status: "In development",
   },
+  {
+    index: "02",
+    name: "esp32-fustool",
+    tagline: "WiFi/Bluetooth security tool for ESP32-S3",
+    description:
+      "A fork of ESP32Marauder built for generic ESP32-S3 boards with no screen or SD card required. Adds a browser-based WebUI served straight from the device — scan networks and BLE devices, run captures, and manage pcap files from any phone or laptop over WiFi.",
+    stack: ["C++", "ESP32-S3", "Arduino"],
+    status: "Open source",
+    href: "https://github.com/Anka-1623/esp32-fustool",
+  },
 ];
