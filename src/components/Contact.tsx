@@ -1,4 +1,6 @@
+import { PiArrowUpRight } from "react-icons/pi";
 import RevealOnScroll from "./RevealOnScroll";
+import SectionHeading from "./SectionHeading";
 
 const LINKS = [
   {
@@ -20,75 +22,40 @@ const LINKS = [
 
 export default function Contact() {
   return (
-    <section id="contact" className="relative overflow-hidden border-t border-border py-28">
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -left-6 top-16 select-none font-mono text-[10rem] font-semibold leading-none text-surface-2 sm:text-[14rem]"
-      >
-        07
-      </span>
-      <div
-        className="pointer-events-none absolute right-0 top-1/2 -z-10 h-[420px] w-[420px] -translate-y-1/2 translate-x-1/3 rounded-full opacity-20 blur-[120px]"
-        style={{ background: "var(--accent)" }}
-      />
+    <section id="contact" className="border-t border-border py-24 sm:py-32">
+      <div className="mx-auto max-w-6xl px-6 sm:px-10">
+        <RevealOnScroll>
+          <SectionHeading title="Let's build something.">
+            Email is the fastest way to reach me.
+          </SectionHeading>
+        </RevealOnScroll>
 
-      <div className="relative mx-auto max-w-6xl px-6 sm:px-10">
-        <div className="grid gap-12 sm:grid-cols-[minmax(0,220px)_1fr] sm:gap-16">
-          <RevealOnScroll>
-            <span className="font-mono text-xs tracking-[0.25em] text-accent">
-              07 — CONTACT
-            </span>
-          </RevealOnScroll>
-
-          <div>
-            <RevealOnScroll>
-              <h2 className="max-w-xl text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
-                Building something?
-                <br />
-                Let&apos;s talk.
-              </h2>
-            </RevealOnScroll>
-
-            <RevealOnScroll delay={0.1}>
-              <p className="mt-6 max-w-lg text-base leading-relaxed text-muted">
-                Open to new projects, collaborations, and ventures. The
-                fastest way to reach me is email — I read everything.
-              </p>
-            </RevealOnScroll>
-
-            <RevealOnScroll delay={0.18}>
-              <ul className="mt-10 divide-y divide-border border-y border-border">
-                {LINKS.map((link) => (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      target={link.href.startsWith("http") ? "_blank" : undefined}
-                      rel={
-                        link.href.startsWith("http")
-                          ? "noopener noreferrer"
-                          : undefined
-                      }
-                      className="group flex items-center justify-between py-5 transition-colors"
-                    >
-                      <span className="font-mono text-xs tracking-[0.2em] text-muted-2">
-                        {link.label.toUpperCase()}
-                      </span>
-                      <span className="flex items-center gap-2 text-lg text-foreground transition-colors group-hover:text-accent">
-                        {link.value}
-                        <span
-                          aria-hidden
-                          className="transition-transform group-hover:translate-x-1"
-                        >
-                          →
-                        </span>
-                      </span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </RevealOnScroll>
-          </div>
-        </div>
+        <RevealOnScroll delay={0.1}>
+          <ul className="mt-12 divide-y divide-border border-t border-border">
+            {LINKS.map((link) => {
+              const external = link.href.startsWith("http");
+              return (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    target={external ? "_blank" : undefined}
+                    rel={external ? "noopener noreferrer" : undefined}
+                    className="group flex flex-col gap-1 py-5 sm:flex-row sm:items-center sm:justify-between"
+                  >
+                    <span className="text-sm text-muted">{link.label}</span>
+                    <span className="flex items-center gap-2 text-lg text-foreground transition-colors group-hover:text-accent">
+                      {link.value}
+                      <PiArrowUpRight
+                        aria-hidden
+                        className="h-5 w-5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                      />
+                    </span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </RevealOnScroll>
       </div>
     </section>
   );

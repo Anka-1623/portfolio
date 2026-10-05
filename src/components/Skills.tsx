@@ -1,44 +1,32 @@
 import { skillGroups } from "@/lib/data";
 import RevealOnScroll from "./RevealOnScroll";
+import SectionHeading from "./SectionHeading";
 
 export default function Skills() {
   return (
-    <section id="skills" className="relative overflow-hidden border-t border-border py-28">
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -right-6 top-16 select-none font-mono text-[10rem] font-semibold leading-none text-surface-2 sm:text-[14rem]"
-      >
-        03
-      </span>
+    <section id="skills" className="border-t border-border py-24 sm:py-32">
+      <div className="mx-auto max-w-6xl px-6 sm:px-10">
+        <RevealOnScroll>
+          <SectionHeading title="Skills" />
+        </RevealOnScroll>
 
-      <div className="relative mx-auto max-w-6xl px-6 sm:px-10">
-        <div className="grid gap-12 sm:grid-cols-[minmax(0,220px)_1fr] sm:gap-16">
-          <RevealOnScroll>
-            <span className="font-mono text-xs tracking-[0.25em] text-accent">
-              03 — SKILLS
-            </span>
-          </RevealOnScroll>
-
-          <div className="grid gap-x-10 gap-y-12 sm:grid-cols-2">
-            {skillGroups.map((group, i) => (
-              <RevealOnScroll key={group.label} delay={i * 0.08}>
-                <h3 className="text-sm font-medium text-foreground">
-                  {group.label}
-                </h3>
-                <ul className="mt-4 flex flex-wrap gap-2">
+        <RevealOnScroll delay={0.1}>
+          <dl className="mt-12 divide-y divide-border border-t border-border">
+            {skillGroups.map((group) => (
+              <div
+                key={group.label}
+                className="grid gap-3 py-6 sm:grid-cols-[10rem_1fr] sm:gap-8"
+              >
+                <dt className="text-sm text-muted">{group.label}</dt>
+                <dd className="flex flex-wrap gap-x-7 gap-y-2 text-base text-foreground">
                   {group.items.map((item) => (
-                    <li
-                      key={item}
-                      className="rounded-full border border-border px-3.5 py-1.5 text-sm text-muted transition-colors hover:border-accent hover:text-foreground"
-                    >
-                      {item}
-                    </li>
+                    <span key={item}>{item}</span>
                   ))}
-                </ul>
-              </RevealOnScroll>
+                </dd>
+              </div>
             ))}
-          </div>
-        </div>
+          </dl>
+        </RevealOnScroll>
       </div>
     </section>
   );

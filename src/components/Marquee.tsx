@@ -1,3 +1,4 @@
+import type { IconType } from "react-icons";
 import {
   SiFastapi,
   SiFlask,
@@ -5,14 +6,19 @@ import {
   SiNextdotjs,
   SiPostgresql,
   SiReact,
+  SiSolidity,
+  SiStellar,
   SiSupabase,
   SiTailwindcss,
   SiTypescript,
   SiVercel,
 } from "react-icons/si";
-import type { IconType } from "react-icons";
+import AvalancheIcon from "./AvalancheIcon";
 
 const ITEMS: { label: string; Icon: IconType }[] = [
+  { label: "Solidity", Icon: SiSolidity },
+  { label: "Avalanche", Icon: AvalancheIcon },
+  { label: "Stellar", Icon: SiStellar },
   { label: "React", Icon: SiReact },
   { label: "Next.js", Icon: SiNextdotjs },
   { label: "TypeScript", Icon: SiTypescript },
@@ -36,12 +42,11 @@ export default function Marquee() {
         {track.map(({ label, Icon }, i) => (
           <span
             key={`${label}-${i}`}
-            className="flex items-center gap-3 whitespace-nowrap text-muted-2 transition-colors hover:text-foreground"
+            aria-hidden={i >= ITEMS.length}
+            className="flex items-center gap-3 whitespace-nowrap text-muted transition-colors hover:text-foreground"
           >
             <Icon aria-hidden className="h-7 w-7 shrink-0" />
-            <span className="font-mono text-base font-medium tracking-[0.1em]">
-              {label.toUpperCase()}
-            </span>
+            <span className="font-mono text-base font-medium">{label}</span>
           </span>
         ))}
       </div>

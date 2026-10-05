@@ -1,6 +1,8 @@
 import QRCode from "qrcode";
+import { PiArrowUpRight } from "react-icons/pi";
 import CopyAddressButton from "./CopyAddressButton";
 import RevealOnScroll from "./RevealOnScroll";
+import SectionHeading from "./SectionHeading";
 
 const AVAX_ADDRESS = "0x8234822482182A85E88909e070171b04D652aaB0";
 const CHAIN_ID = 43114;
@@ -14,63 +16,39 @@ export default async function Donate() {
   });
 
   return (
-    <section className="relative overflow-hidden border-t border-border py-28">
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -left-6 top-16 select-none font-mono text-[10rem] font-semibold leading-none text-surface-2 sm:text-[14rem]"
-      >
-        06
-      </span>
-      <div
-        className="pointer-events-none absolute left-0 top-1/2 -z-10 h-[420px] w-[420px] -translate-y-1/2 -translate-x-1/3 rounded-full opacity-20 blur-[120px]"
-        style={{ background: "var(--accent)" }}
-      />
+    <section id="support" className="border-t border-border py-24 sm:py-32">
+      <div className="mx-auto max-w-6xl px-6 sm:px-10">
+        <RevealOnScroll>
+          <SectionHeading title="Support">
+            Send AVAX on Avalanche C-Chain to fuel the next build.
+          </SectionHeading>
+        </RevealOnScroll>
 
-      <div className="relative mx-auto max-w-6xl px-6 sm:px-10">
-        <div className="grid gap-12 sm:grid-cols-[minmax(0,220px)_1fr] sm:gap-16">
-          <RevealOnScroll>
-            <span className="font-mono text-xs tracking-[0.25em] text-accent">
-              06 — SUPPORT
-            </span>
-          </RevealOnScroll>
+        <RevealOnScroll delay={0.1}>
+          <div className="mt-12 flex flex-col items-start gap-8 rounded-2xl border border-border bg-surface p-6 sm:flex-row sm:items-center sm:p-8">
+            <div
+              className="h-36 w-36 shrink-0 overflow-hidden rounded-lg bg-white p-2 [&>svg]:h-full [&>svg]:w-full"
+              dangerouslySetInnerHTML={{ __html: qrSvg }}
+            />
 
-          <div>
-            <RevealOnScroll>
-              <p className="max-w-xl text-xl leading-relaxed text-foreground sm:text-2xl">
-                If something here was useful, or you just want to fuel the
-                next build — AVAX on Avalanche C-Chain is the fastest way
-                through.
+            <div className="min-w-0">
+              <p className="text-sm text-muted">Avalanche C-Chain</p>
+              <p className="mt-2 break-all font-mono text-sm text-foreground sm:text-base">
+                {AVAX_ADDRESS}
               </p>
-            </RevealOnScroll>
-
-            <RevealOnScroll delay={0.1}>
-              <div className="mt-10 flex flex-col items-start gap-8 rounded-2xl border border-border bg-surface p-8 sm:flex-row sm:items-center">
-                <div
-                  className="h-36 w-36 shrink-0 overflow-hidden rounded-xl bg-white p-2 [&>svg]:h-full [&>svg]:w-full"
-                  dangerouslySetInnerHTML={{ __html: qrSvg }}
-                />
-
-                <div className="min-w-0">
-                  <p className="font-mono text-[11px] tracking-[0.2em] text-muted-2">
-                    AVALANCHE C-CHAIN
-                  </p>
-                  <p className="mt-2 break-all font-mono text-sm text-foreground sm:text-base">
-                    {AVAX_ADDRESS}
-                  </p>
-                  <div className="mt-5 flex flex-wrap gap-3">
-                    <CopyAddressButton address={AVAX_ADDRESS} />
-                    <a
-                      href={PAYMENT_URI}
-                      className="rounded-full border border-border px-4 py-2 text-sm text-foreground transition-colors hover:border-accent hover:text-accent"
-                    >
-                      Open in wallet
-                    </a>
-                  </div>
-                </div>
+              <div className="mt-5 flex flex-wrap gap-3">
+                <CopyAddressButton address={AVAX_ADDRESS} />
+                <a
+                  href={PAYMENT_URI}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm text-foreground transition-colors hover:border-accent hover:text-accent active:scale-[0.98]"
+                >
+                  Open in wallet
+                  <PiArrowUpRight aria-hidden className="h-4 w-4" />
+                </a>
               </div>
-            </RevealOnScroll>
+            </div>
           </div>
-        </div>
+        </RevealOnScroll>
       </div>
     </section>
   );

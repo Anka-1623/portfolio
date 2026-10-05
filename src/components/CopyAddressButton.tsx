@@ -14,7 +14,7 @@ export default function CopyAddressButton({ address }: { address: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="rounded-full bg-accent px-4 py-2 text-sm font-medium text-background transition-transform hover:scale-[1.03]"
+      className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-background transition-transform hover:-translate-y-px active:scale-[0.98]"
     >
       {copied ? "Copied" : "Copy address"}
     </button>

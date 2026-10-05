@@ -1,78 +1,89 @@
-"use client";
-
-import { motion } from "framer-motion";
+import { PiArrowUpRight } from "react-icons/pi";
 import { projects } from "@/lib/data";
 import RevealOnScroll from "./RevealOnScroll";
+import SectionHeading from "./SectionHeading";
+import SpotlightCard from "./SpotlightCard";
 
 export default function Projects() {
   return (
-    <section id="projects" className="border-t border-border py-28">
+    <section id="projects" className="border-t border-border py-24 sm:py-32">
       <div className="mx-auto max-w-6xl px-6 sm:px-10">
-        <div className="grid gap-12 sm:grid-cols-[minmax(0,220px)_1fr] sm:gap-16">
-          <RevealOnScroll>
-            <span className="font-mono text-xs tracking-[0.25em] text-accent">
-              04 — PROJECTS
-            </span>
-          </RevealOnScroll>
+        <RevealOnScroll>
+          <SectionHeading title="Projects" />
+        </RevealOnScroll>
 
-          <div className="space-y-6">
-            {projects.map((project, i) => (
-              <RevealOnScroll key={project.name} delay={i * 0.1}>
-                <motion.article
-                  whileHover={{
-                    borderColor: "var(--accent)",
-                    boxShadow: "0 0 60px -20px var(--accent)",
-                  }}
-                  className="group relative overflow-hidden rounded-2xl border border-border bg-surface p-8 transition-colors sm:p-10"
+        <div className="mt-12 grid gap-4 lg:grid-cols-12">
+          {projects.map((project, i) => {
+            const featured = i === 0;
+            const Visual = project.visual;
+
+            return (
+              <RevealOnScroll
+                key={project.name}
+                delay={i * 0.08}
+                className={featured ? "lg:col-span-7" : "lg:col-span-5"}
+              >
+                <SpotlightCard
+                  href={project.href}
+                  className={
+                    featured
+                      ? "border-accent/30 bg-gradient-to-br from-accent/15 via-surface to-surface"
+                      : ""
+                  }
                 >
-                  <span className="pointer-events-none absolute -right-4 -top-6 font-mono text-[7rem] font-semibold leading-none text-surface-2 transition-colors group-hover:text-surface-2/80 sm:text-[9rem]">
-                    {project.index}
-                  </span>
+                  <Visual
+                    aria-hidden
+                    className="pointer-events-none absolute -bottom-14 -right-10 h-72 w-72 text-foreground/[0.045] transition-transform duration-500 group-hover:scale-105"
+                  />
 
-                  <div className="relative flex flex-wrap items-start justify-between gap-4">
-                    <div>
-                      <h3 className="text-2xl font-semibold text-foreground sm:text-3xl">
+                  <div className="relative flex h-full min-h-[24rem] flex-col p-6 sm:p-8">
+                    <div className="flex items-start justify-between gap-4">
+                      <span className="text-sm text-muted">
+                        {project.status}
+                      </span>
+                      {project.href && (
+                        <span className="flex items-center gap-1 text-sm text-muted transition-colors group-hover:text-accent">
+                          GitHub
+                          <PiArrowUpRight
+                            aria-hidden
+                            className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                          />
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="mt-16">
+                      <h3
+                        className={`font-semibold tracking-tight text-foreground ${
+                          featured ? "text-4xl sm:text-5xl" : "text-3xl sm:text-4xl"
+                        }`}
+                      >
                         {project.name}
                       </h3>
-                      <p className="mt-1.5 text-sm text-accent">
+                      <p className="mt-2 text-base text-foreground/80">
                         {project.tagline}
                       </p>
+                      <p className="mt-4 max-w-md text-sm leading-relaxed text-muted">
+                        {project.description}
+                      </p>
                     </div>
-                    <span className="rounded-full border border-border px-3 py-1 text-xs text-muted">
-                      {project.status}
-                    </span>
+
+                    <ul className="mt-auto flex flex-wrap gap-x-5 gap-y-2 pt-10">
+                      {project.stack.map(({ name, Icon }) => (
+                        <li
+                          key={name}
+                          className="flex items-center gap-2 text-sm text-muted"
+                        >
+                          <Icon aria-hidden className="h-4 w-4 shrink-0" />
+                          {name}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-
-                  <p className="relative mt-6 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
-                    {project.description}
-                  </p>
-
-                  <ul className="relative mt-6 flex flex-wrap gap-2">
-                    {project.stack.map((tech) => (
-                      <li
-                        key={tech}
-                        className="rounded-full bg-surface-2 px-3 py-1 font-mono text-xs text-muted"
-                      >
-                        {tech}
-                      </li>
-                    ))}
-                  </ul>
-
-                  {project.href && (
-                    <a
-                      href={project.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="relative mt-6 inline-flex items-center gap-1.5 text-sm text-foreground transition-colors hover:text-accent"
-                    >
-                      View project
-                      <span aria-hidden>→</span>
-                    </a>
-                  )}
-                </motion.article>
+                </SpotlightCard>
               </RevealOnScroll>
-            ))}
-          </div>
+            );
+          })}
         </div>
       </div>
     </section>

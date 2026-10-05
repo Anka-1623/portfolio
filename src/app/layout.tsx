@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Emirhan Solmaz — Full-Stack Developer & Entrepreneur",
+  title: "Emirhan Solmaz | Solidity, Avalanche, Stellar",
   description:
-    "Full-stack developer and entrepreneur building complete products end-to-end — React, Next.js, FastAPI, Flask, Supabase.",
+    "Emirhan Solmaz builds complete products, from database to deploy. Solidity on Avalanche, Stellar Ambassador, Team1 Türkiye.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

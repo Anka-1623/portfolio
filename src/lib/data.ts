@@ -1,3 +1,15 @@
+import type { IconType } from "react-icons";
+import { PiGraduationCap } from "react-icons/pi";
+import {
+  SiArduino,
+  SiCplusplus,
+  SiEspressif,
+  SiFastapi,
+  SiReact,
+  SiSupabase,
+  SiVite,
+} from "react-icons/si";
+
 export const skillGroups = [
   {
     label: "Frontend",
@@ -6,6 +18,10 @@ export const skillGroups = [
   {
     label: "Backend",
     items: ["Python", "FastAPI", "Flask", "Node.js", "REST APIs"],
+  },
+  {
+    label: "Web3",
+    items: ["Solidity", "Avalanche", "Stellar"],
   },
   {
     label: "Data & Infra",
@@ -18,33 +34,42 @@ export const skillGroups = [
 ] as const;
 
 export type Project = {
-  index: string;
   name: string;
   tagline: string;
   description: string;
-  stack: string[];
+  stack: { name: string; Icon: IconType }[];
   status: string;
+  visual: IconType;
   href?: string;
 };
 
 export const projects: Project[] = [
   {
-    index: "01",
     name: "EduTask",
     tagline: "AI-powered student task management",
     description:
-      "A platform that helps students plan, prioritize, and track academic work, with AI assistance for scheduling and study insights layered on top of a fast React frontend and a read-only FastAPI service.",
-    stack: ["React", "Vite", "FastAPI", "Supabase"],
+      "Plan, prioritize and track academic work, with AI scheduling and study insights.",
+    stack: [
+      { name: "React", Icon: SiReact },
+      { name: "Vite", Icon: SiVite },
+      { name: "FastAPI", Icon: SiFastapi },
+      { name: "Supabase", Icon: SiSupabase },
+    ],
     status: "In development",
+    visual: PiGraduationCap,
   },
   {
-    index: "02",
     name: "esp32-fustool",
-    tagline: "WiFi/Bluetooth security tool for ESP32-S3",
+    tagline: "WiFi and Bluetooth security tool",
     description:
-      "A fork of ESP32Marauder built for generic ESP32-S3 boards with no screen or SD card required. Adds a browser-based WebUI served straight from the device — scan networks and BLE devices, run captures, and manage pcap files from any phone or laptop over WiFi.",
-    stack: ["C++", "ESP32-S3", "Arduino"],
+      "ESP32Marauder fork for screenless ESP32-S3 boards. Scan, capture and manage pcap files from a WebUI served by the device.",
+    stack: [
+      { name: "C++", Icon: SiCplusplus },
+      { name: "ESP32-S3", Icon: SiEspressif },
+      { name: "Arduino", Icon: SiArduino },
+    ],
     status: "Open source",
+    visual: SiEspressif,
     href: "https://github.com/Anka-1623/esp32-fustool",
   },
 ];
