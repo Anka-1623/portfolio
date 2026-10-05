@@ -11,6 +11,7 @@ import {
   useVelocity,
   wrap,
 } from "framer-motion";
+import Image from "next/image";
 import { useRef } from "react";
 import type { IconType } from "react-icons";
 import {
@@ -27,11 +28,22 @@ import {
   SiTypescript,
   SiVercel,
 } from "react-icons/si";
-import AvalancheIcon from "./AvalancheIcon";
 
-const ITEMS: { label: string; Icon: IconType }[] = [
+type Item =
+  | { label: string; Icon: IconType }
+  | { label: string; logo: { src: string; width: number; height: number } };
+
+// Official wordmarks lead the strip (Team1 first), then the stack.
+const ITEMS: Item[] = [
+  {
+    label: "Team1 Turkiye",
+    logo: { src: "/logos/team1-turkiye.png", width: 2000, height: 298 },
+  },
+  {
+    label: "Avalanche",
+    logo: { src: "/logos/avalanche.png", width: 2000, height: 295 },
+  },
   { label: "Solidity", Icon: SiSolidity },
-  { label: "Avalanche", Icon: AvalancheIcon },
   { label: "Stellar", Icon: SiStellar },
   { label: "React", Icon: SiReact },
   { label: "Next.js", Icon: SiNextdotjs },
@@ -49,16 +61,30 @@ const BASE_SPEED = -1.4; // percent of the track per second
 
 function Row({ hidden }: { hidden?: boolean }) {
   return (
-    <div aria-hidden={hidden} className="flex shrink-0 gap-16 pr-16">
-      {ITEMS.map(({ label, Icon }) => (
-        <span
-          key={label}
-          className="flex items-center gap-4 whitespace-nowrap text-fg/70 transition-colors hover:text-fg"
-        >
-          <Icon aria-hidden className="size-9 shrink-0" />
-          <span className="text-3xl font-semibold tracking-tight">{label}</span>
-        </span>
-      ))}
+    <div aria-hidden={hidden} className="flex shrink-0 items-center gap-16 pr-16">
+      {ITEMS.map((item) =>
+        "logo" in item ? (
+          <Image
+            key={item.label}
+            src={item.logo.src}
+            alt={hidden ? "" : item.label}
+            width={item.logo.width}
+            height={item.logo.height}
+            loading="eager"
+            className="h-9 w-auto shrink-0 opacity-90"
+          />
+        ) : (
+          <span
+            key={item.label}
+            className="flex items-center gap-4 whitespace-nowrap text-fg/70 transition-colors hover:text-fg"
+          >
+            <item.Icon aria-hidden className="size-9 shrink-0" />
+            <span className="text-3xl font-semibold tracking-tight">
+              {item.label}
+            </span>
+          </span>
+        )
+      )}
     </div>
   );
 }

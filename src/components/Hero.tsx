@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import {
   motion,
   useMotionTemplate,
@@ -97,13 +98,23 @@ export default function Hero() {
         </motion.div>
 
         <div className="mt-10 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-          <motion.p
-            {...fadeUp(0.8)}
-            className="max-w-sm font-serif text-xl leading-snug sm:text-2xl"
-          >
-            Solidity on Avalanche. Full products, database to deploy. Stellar
-            Ambassador.
-          </motion.p>
+          <motion.div {...fadeUp(0.8)} className="max-w-sm">
+            <div className="flex items-center gap-3">
+              <Image
+                src="/logos/team1-turkiye.png"
+                alt="Team1 Turkiye"
+                width={2000}
+                height={298}
+                priority
+                className="h-6 w-auto"
+              />
+              <span className="font-mono text-xs text-muted">Collaborator</span>
+            </div>
+            <p className="mt-4 font-serif text-xl leading-snug sm:text-2xl">
+              Solidity on Avalanche. Full products, database to deploy. Stellar
+              Ambassador.
+            </p>
+          </motion.div>
 
           <motion.div {...fadeUp(0.95)} className="flex flex-wrap gap-3">
             <Magnetic>

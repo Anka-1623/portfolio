@@ -3,11 +3,11 @@ import RevealOnScroll from "./RevealOnScroll";
 import WordReveal from "./WordReveal";
 
 const STATEMENT =
-  "I build complete products on my own, from the database to the deploy. Now I'm taking that into Web3, writing Solidity on Avalanche and serving as a Stellar Ambassador.";
+  "I build complete products on my own, from the database to the deploy. Now I'm taking that into Web3 as a Team1 Turkiye collaborator, writing Solidity on Avalanche and serving as a Stellar Ambassador.";
 
 const FACTS = [
   { label: "Building", value: "EduTask" },
-  { label: "Team", value: "Stratos İHA, UAV team" },
+  { label: "Team", value: "Stratos UAV team" },
   {
     label: "Recognition",
     value: "TEKNOFEST 2026 finalist, Fight Against Addiction",
@@ -20,7 +20,15 @@ export default function About() {
       <h2 className="sr-only">About</h2>
       <WordReveal
         text={STATEMENT}
-        emphasis={["Web3", "Solidity", "Avalanche", "Stellar", "Ambassador"]}
+        emphasis={[
+          "Web3",
+          "Team1",
+          "Turkiye",
+          "Solidity",
+          "Avalanche",
+          "Stellar",
+          "Ambassador",
+        ]}
         className="max-w-5xl font-serif text-[clamp(2rem,4.6vw,4.4rem)] leading-[1.08] tracking-tight"
       />
 

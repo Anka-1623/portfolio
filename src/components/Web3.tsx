@@ -6,45 +6,66 @@ import {
   useMotionValueEvent,
   useScroll,
 } from "framer-motion";
+import Image from "next/image";
 import { useRef, useState } from "react";
 import type { IconType } from "react-icons";
 import { SiSolidity, SiStellar } from "react-icons/si";
 import { usePrefersReducedMotion } from "@/lib/motion";
 import { CONTAINER, EASE } from "@/lib/ui";
-import AvalancheIcon from "./AvalancheIcon";
+
+type Logo = { src: string; width: number; height: number };
 
 type Item = {
   key: string;
   name: string;
   role: string;
   note?: string;
+  // Entries with an official wordmark show it as the title.
+  logo?: Logo;
+  // Entries without one get a typeset title and a watermark glyph.
   Icon?: IconType;
-  mark?: string;
 };
 
+// Order is priority: Team1 Turkiye leads, Stellar comes last.
 const ITEMS: Item[] = [
-  { key: "stellar", name: "Stellar", role: "Ambassador", note: "New", Icon: SiStellar },
-  { key: "avalanche", name: "Avalanche", role: "Building on the C-Chain", Icon: AvalancheIcon },
+  {
+    key: "team1",
+    name: "Team1 Turkiye",
+    role: "Collaborator",
+    logo: { src: "/logos/team1-turkiye.png", width: 2000, height: 298 },
+  },
+  {
+    key: "avalanche",
+    name: "Avalanche",
+    role: "Building on the C-Chain",
+    logo: { src: "/logos/avalanche.png", width: 2000, height: 295 },
+  },
   { key: "solidity", name: "Solidity", role: "Smart contracts", Icon: SiSolidity },
-  { key: "team1", name: "Team1 Türkiye", role: "Collaborator", mark: "1" },
+  { key: "stellar", name: "Stellar", role: "Ambassador", note: "New", Icon: SiStellar },
 ];
 
 const NAME_CLASS =
   "text-[clamp(3rem,11vw,10rem)] font-semibold leading-[0.92] tracking-[-0.04em]";
 
-function Glyph({ item }: { item: Item }) {
-  if (item.Icon) {
-    return <item.Icon aria-hidden className="size-[34vh] max-w-[70vw]" />;
+function Title({ item }: { item: Item }) {
+  if (item.logo) {
+    return (
+      <Image
+        src={item.logo.src}
+        alt={item.name}
+        width={item.logo.width}
+        height={item.logo.height}
+        loading="eager"
+        sizes="(min-width: 1100px) 62rem, 88vw"
+        className="h-auto w-[min(88vw,62rem)]"
+      />
+    );
   }
-  return (
-    <span aria-hidden className="text-[34vh] font-semibold leading-none">
-      {item.mark}
-    </span>
-  );
+  return <>{item.name}</>;
 }
 
 /**
- * The section pins to the viewport and scroll progress walks through the four
+ * The section pins to the viewport and scroll progress walks through the
  * entries. Progress decides the entry; the entry swaps with a mask roll.
  */
 export default function Web3() {
@@ -70,7 +91,9 @@ export default function Web3() {
         <ul className="mt-10 divide-y divide-line border-y border-line">
           {ITEMS.map((entry) => (
             <li key={entry.key} className="py-8">
-              <p className={NAME_CLASS}>{entry.name}</p>
+              <h3 className={entry.logo ? "" : NAME_CLASS}>
+                <Title item={entry} />
+              </h3>
               <p className="mt-4 font-serif text-2xl italic">{entry.role}</p>
             </li>
           ))}
@@ -88,17 +111,19 @@ export default function Web3() {
 
         <div className={`${CONTAINER} relative`}>
           <AnimatePresence mode="wait">
-            <motion.div
-              key={`glyph-${item.key}`}
-              aria-hidden
-              initial={{ opacity: 0, scale: 0.92 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.04 }}
-              transition={{ duration: 0.5, ease: EASE }}
-              className="pointer-events-none absolute right-6 top-1/2 -translate-y-1/2 text-fg/[0.08] sm:right-10"
-            >
-              <Glyph item={item} />
-            </motion.div>
+            {item.Icon && (
+              <motion.div
+                key={`glyph-${item.key}`}
+                aria-hidden
+                initial={{ opacity: 0, scale: 0.92 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.04 }}
+                transition={{ duration: 0.5, ease: EASE }}
+                className="pointer-events-none absolute right-6 top-1/2 -translate-y-1/2 text-fg/[0.08] sm:right-10"
+              >
+                <item.Icon className="size-[34vh] max-w-[70vw]" />
+              </motion.div>
+            )}
           </AnimatePresence>
 
           <AnimatePresence mode="wait">
@@ -109,9 +134,9 @@ export default function Web3() {
                   animate={{ y: 0 }}
                   exit={{ y: "-105%" }}
                   transition={{ duration: 0.6, ease: EASE }}
-                  className={NAME_CLASS}
+                  className={item.logo ? "" : NAME_CLASS}
                 >
-                  {item.name}
+                  <Title item={item} />
                 </motion.h3>
               </div>
               <motion.p
@@ -119,7 +144,7 @@ export default function Web3() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5, delay: 0.15, ease: EASE }}
-                className="mt-6 font-serif text-2xl italic sm:text-4xl"
+                className="mt-8 font-serif text-2xl italic sm:text-4xl"
               >
                 {item.role}
                 {item.note && (
