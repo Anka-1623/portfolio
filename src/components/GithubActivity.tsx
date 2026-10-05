@@ -1,70 +1,69 @@
 import { PiArrowUpRight } from "react-icons/pi";
 import { formatRelativeTime, getGithubStats } from "@/lib/github";
+import CountUp from "./CountUp";
+import MaskText from "./MaskText";
 import RevealOnScroll from "./RevealOnScroll";
-import SectionHeading from "./SectionHeading";
 
 export default async function GithubActivity() {
   const stats = await getGithubStats();
 
   return (
-    <section className="border-t border-border py-24 sm:py-32">
-      <div className="mx-auto max-w-6xl px-6 sm:px-10">
-        <RevealOnScroll>
-          <SectionHeading title="On GitHub">
-            Pulled live from the GitHub API.
-          </SectionHeading>
-        </RevealOnScroll>
+    <div id="github">
+      <MaskText
+        text="On GitHub"
+        className="text-[clamp(2.4rem,5vw,4.2rem)] font-semibold leading-none tracking-[-0.035em]"
+      />
+      <p className="mt-4 font-serif text-lg text-muted">
+        Pulled live from the GitHub API.
+      </p>
 
-        <RevealOnScroll delay={0.1}>
-          {stats ? (
-            <>
-              <div className="mt-12 grid grid-cols-2 gap-x-6 gap-y-10 border-t border-border pt-8 sm:grid-cols-4">
-                <div>
-                  <p className="font-mono text-3xl font-semibold text-foreground">
-                    {stats.publicRepos}
-                  </p>
-                  <p className="mt-1 text-sm text-muted">Public repos</p>
-                </div>
-                <div>
-                  <p className="font-mono text-3xl font-semibold text-foreground">
-                    {stats.yearsActive}+
-                  </p>
-                  <p className="mt-1 text-sm text-muted">Years on GitHub</p>
-                </div>
-                <div>
-                  <p className="font-mono text-3xl font-semibold text-foreground">
-                    {formatRelativeTime(stats.lastActivity)}
-                  </p>
-                  <p className="mt-1 text-sm text-muted">Last push</p>
-                </div>
-                {stats.languages.length > 0 && (
-                  <div>
-                    <p className="font-mono text-sm leading-9 text-foreground">
-                      {stats.languages.slice(0, 3).join(", ")}
-                    </p>
-                    <p className="mt-1 text-sm text-muted">Top languages</p>
-                  </div>
-                )}
+      <RevealOnScroll delay={0.1}>
+        {stats ? (
+          <dl className="mt-12 grid grid-cols-2 gap-x-6 gap-y-10 border-t border-line pt-8">
+            <div>
+              <dd className="text-6xl font-semibold tracking-tight">
+                <CountUp value={stats.publicRepos} />
+              </dd>
+              <dt className="mt-2 font-mono text-sm text-muted">Public repos</dt>
+            </div>
+            <div>
+              <dd className="text-6xl font-semibold tracking-tight">
+                <CountUp value={stats.yearsActive} suffix="+" />
+              </dd>
+              <dt className="mt-2 font-mono text-sm text-muted">Years on GitHub</dt>
+            </div>
+            <div>
+              <dd className="text-3xl font-semibold leading-[1.9] tracking-tight">
+                {formatRelativeTime(stats.lastActivity)}
+              </dd>
+              <dt className="mt-2 font-mono text-sm text-muted">Last push</dt>
+            </div>
+            {stats.languages.length > 0 && (
+              <div>
+                <dd className="font-serif text-xl leading-[2.4]">
+                  {stats.languages.slice(0, 3).join(", ")}
+                </dd>
+                <dt className="mt-2 font-mono text-sm text-muted">Top languages</dt>
               </div>
-            </>
-          ) : (
-            <p className="mt-12 border-t border-border pt-8 text-sm text-muted">
-              Live stats are unavailable right now. The profile has the full
-              picture.
-            </p>
-          )}
+            )}
+          </dl>
+        ) : (
+          <p className="mt-12 border-t border-line pt-8 text-muted">
+            Live stats are unavailable right now. The profile has the full
+            picture.
+          </p>
+        )}
 
-          <a
-            href="https://github.com/Anka-1623"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-10 inline-flex items-center gap-1.5 text-sm text-foreground transition-colors hover:text-accent"
-          >
-            GitHub profile
-            <PiArrowUpRight aria-hidden className="h-4 w-4" />
-          </a>
-        </RevealOnScroll>
-      </div>
-    </section>
+        <a
+          href="https://github.com/Anka-1623"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-10 inline-flex items-center gap-1.5 text-sm transition-colors hover:text-accent"
+        >
+          GitHub profile
+          <PiArrowUpRight aria-hidden className="size-4" />
+        </a>
+      </RevealOnScroll>
+    </div>
   );
 }

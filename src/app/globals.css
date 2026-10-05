@@ -1,44 +1,60 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
+/*
+ * Two-tone system. Every surface reads its colors from the tone tokens
+ * (--bg, --fg, --muted, --line), so a section only has to declare
+ * `tone-ink` or `tone-paper`. The single accent is the same on both tones.
+ */
 :root {
-  --background: #08090b;
-  --surface: #101114;
-  --surface-2: #16171b;
-  --foreground: #f4f3f0;
-  --muted: #8d8f97;
-  --muted-2: #55575e;
-  --border: rgba(244, 243, 240, 0.09);
+  --ink: #0a0a0b;
+  --ink-2: #151517;
+  --paper: #f1f1ee;
+  --paper-2: #e4e4df;
   --accent: #e8632f;
 }
 
+.tone-ink {
+  --bg: var(--ink);
+  --bg-2: var(--ink-2);
+  --fg: var(--paper);
+  --muted: rgb(241 241 238 / 0.62);
+  --line: rgb(241 241 238 / 0.14);
+}
+
+.tone-paper {
+  --bg: var(--paper);
+  --bg-2: var(--paper-2);
+  --fg: var(--ink);
+  --muted: rgb(10 10 11 / 0.62);
+  --line: rgb(10 10 11 / 0.14);
+}
+
 @theme inline {
-  --color-background: var(--background);
-  --color-surface: var(--surface);
-  --color-surface-2: var(--surface-2);
-  --color-foreground: var(--foreground);
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-fg: var(--fg);
   --color-muted: var(--muted);
-  --color-muted-2: var(--muted-2);
-  --color-border: var(--border);
+  --color-line: var(--line);
   --color-accent: var(--accent);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-bricolage);
+  --font-serif: var(--font-newsreader);
   --font-mono: var(--font-geist-mono);
 }
 
-html {
-  color-scheme: dark;
-  scroll-padding-top: 6rem;
-  scroll-behavior: smooth;
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-bricolage), Arial, Helvetica, sans-serif;
+  font-optical-sizing: auto;
+  overflow-x: clip;
 }
 
 ::selection {
   background: var(--accent);
-  color: #08090b;
+  color: var(--ink);
 }
 
 :focus-visible {
@@ -56,19 +72,6 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-.animate-marquee {
-  animation: marquee 40s linear infinite;
-}
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -76,6 +79,5 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }

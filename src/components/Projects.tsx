@@ -1,91 +1,146 @@
+"use client";
+
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+import { createRef, useMemo, type RefObject } from "react";
 import { PiArrowUpRight } from "react-icons/pi";
-import { projects } from "@/lib/data";
-import RevealOnScroll from "./RevealOnScroll";
-import SectionHeading from "./SectionHeading";
-import SpotlightCard from "./SpotlightCard";
+import { projects, type Project } from "@/lib/data";
+import { CONTAINER } from "@/lib/ui";
+import MaskText from "./MaskText";
+import RollText from "./RollText";
+
+const VARIANTS = [
+  {
+    panel: "bg-bg-2 text-fg",
+    muted: "text-fg/60",
+    rule: "border-fg/15",
+    watermark: "text-fg/[0.05]",
+  },
+  {
+    panel: "bg-accent text-ink",
+    muted: "text-ink/70",
+    rule: "border-ink/25",
+    watermark: "text-ink/[0.1]",
+  },
+];
+
+function ProjectPanel({
+  project,
+  index,
+  selfRef,
+  nextRef,
+}: {
+  project: Project;
+  index: number;
+  selfRef: RefObject<HTMLDivElement | null>;
+  nextRef?: RefObject<HTMLDivElement | null>;
+}) {
+  const reduce = useReducedMotion();
+  const variant = VARIANTS[index % VARIANTS.length];
+  const Visual = project.visual;
+
+  // The panel recedes while the next one slides over it.
+  const { scrollYProgress } = useScroll({
+    target: nextRef ?? selfRef,
+    offset: ["start end", "start start"],
+  });
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.92]);
+  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.4]);
+  const recedes = Boolean(nextRef) && !reduce;
+
+  const nameSize = Math.min(14, 82 / (project.name.length * 0.62));
+
+  return (
+    <div
+      ref={selfRef}
+      className="sticky top-0 h-[100dvh] px-3 py-14 sm:px-6 sm:py-20 xl:px-16"
+    >
+      <motion.article
+        style={recedes ? { scale, opacity } : undefined}
+        className={`relative flex h-full origin-top flex-col justify-between overflow-hidden rounded-[28px] p-6 sm:p-12 ${variant.panel}`}
+      >
+        <Visual
+          aria-hidden
+          className={`pointer-events-none absolute -bottom-16 -right-10 size-[22rem] sm:size-[30rem] ${variant.watermark}`}
+        />
+
+        <div className="relative flex items-start justify-between gap-6">
+          <span className={`font-mono text-sm ${variant.muted}`}>
+            {project.status}
+          </span>
+          {project.href && (
+            <a
+              href={project.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-1 text-sm after:absolute after:inset-0 after:content-['']"
+            >
+              <RollText>GitHub</RollText>
+              <PiArrowUpRight aria-hidden className="size-4" />
+            </a>
+          )}
+        </div>
+
+        <div className="relative">
+          <h3
+            style={{ fontSize: `clamp(2.4rem, ${nameSize}vw, 12rem)` }}
+            className="font-semibold leading-[0.88] tracking-[-0.045em]"
+          >
+            {project.name}
+          </h3>
+          <p className="mt-5 font-serif text-2xl italic sm:text-3xl">
+            {project.tagline}
+          </p>
+          <p className={`mt-4 max-w-md text-base leading-relaxed ${variant.muted}`}>
+            {project.description}
+          </p>
+        </div>
+
+        <ul
+          className={`relative flex flex-wrap gap-x-6 gap-y-2 border-t pt-5 ${variant.rule}`}
+        >
+          {project.stack.map(({ name, Icon }) => (
+            <li key={name} className="flex items-center gap-2 text-sm">
+              <Icon aria-hidden className="size-4 shrink-0" />
+              {name}
+            </li>
+          ))}
+        </ul>
+      </motion.article>
+    </div>
+  );
+}
 
 export default function Projects() {
+  const refs = useMemo(
+    () => projects.map(() => createRef<HTMLDivElement>()),
+    []
+  );
+
   return (
-    <section id="projects" className="border-t border-border py-24 sm:py-32">
-      <div className="mx-auto max-w-6xl px-6 sm:px-10">
-        <RevealOnScroll>
-          <SectionHeading title="Projects" />
-        </RevealOnScroll>
-
-        <div className="mt-12 grid gap-4 lg:grid-cols-12">
-          {projects.map((project, i) => {
-            const featured = i === 0;
-            const Visual = project.visual;
-
-            return (
-              <RevealOnScroll
-                key={project.name}
-                delay={i * 0.08}
-                className={featured ? "lg:col-span-7" : "lg:col-span-5"}
-              >
-                <SpotlightCard
-                  href={project.href}
-                  className={
-                    featured
-                      ? "border-accent/30 bg-gradient-to-br from-accent/15 via-surface to-surface"
-                      : ""
-                  }
-                >
-                  <Visual
-                    aria-hidden
-                    className="pointer-events-none absolute -bottom-14 -right-10 h-72 w-72 text-foreground/[0.045] transition-transform duration-500 group-hover:scale-105"
-                  />
-
-                  <div className="relative flex h-full min-h-[24rem] flex-col p-6 sm:p-8">
-                    <div className="flex items-start justify-between gap-4">
-                      <span className="text-sm text-muted">
-                        {project.status}
-                      </span>
-                      {project.href && (
-                        <span className="flex items-center gap-1 text-sm text-muted transition-colors group-hover:text-accent">
-                          GitHub
-                          <PiArrowUpRight
-                            aria-hidden
-                            className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                          />
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="mt-16">
-                      <h3
-                        className={`font-semibold tracking-tight text-foreground ${
-                          featured ? "text-4xl sm:text-5xl" : "text-3xl sm:text-4xl"
-                        }`}
-                      >
-                        {project.name}
-                      </h3>
-                      <p className="mt-2 text-base text-foreground/80">
-                        {project.tagline}
-                      </p>
-                      <p className="mt-4 max-w-md text-sm leading-relaxed text-muted">
-                        {project.description}
-                      </p>
-                    </div>
-
-                    <ul className="mt-auto flex flex-wrap gap-x-5 gap-y-2 pt-10">
-                      {project.stack.map(({ name, Icon }) => (
-                        <li
-                          key={name}
-                          className="flex items-center gap-2 text-sm text-muted"
-                        >
-                          <Icon aria-hidden className="h-4 w-4 shrink-0" />
-                          {name}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </SpotlightCard>
-              </RevealOnScroll>
-            );
-          })}
-        </div>
+    <>
+      <div className={`${CONTAINER} pb-16`}>
+        <MaskText
+          text="Projects"
+          className="text-[clamp(3rem,9vw,8rem)] font-semibold leading-[0.9] tracking-[-0.04em]"
+        />
       </div>
-    </section>
+
+      <div>
+        {projects.map((project, i) => (
+          <ProjectPanel
+            key={project.name}
+            project={project}
+            index={i}
+            selfRef={refs[i]}
+            nextRef={refs[i + 1]}
+          />
+        ))}
+      </div>
+    </>
   );
 }

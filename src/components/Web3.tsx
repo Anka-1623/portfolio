@@ -1,113 +1,156 @@
+"use client";
+
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useScroll,
+} from "framer-motion";
+import { useRef, useState } from "react";
 import type { IconType } from "react-icons";
 import { SiSolidity, SiStellar } from "react-icons/si";
+import { usePrefersReducedMotion } from "@/lib/motion";
+import { CONTAINER, EASE } from "@/lib/ui";
 import AvalancheIcon from "./AvalancheIcon";
-import RevealOnScroll from "./RevealOnScroll";
-import SectionHeading from "./SectionHeading";
 
-type Tile = {
-  title: string;
-  body: string;
+type Item = {
+  key: string;
+  name: string;
+  role: string;
+  note?: string;
   Icon?: IconType;
   mark?: string;
-  note?: string;
-  className: string;
-  watermark: string;
-  featured?: boolean;
 };
 
-const TILES: Tile[] = [
-  {
-    title: "Stellar Ambassador",
-    body: "Now an ambassador for the Stellar network.",
-    Icon: SiStellar,
-    note: "New",
-    className: "sm:col-span-2 lg:row-span-2",
-    watermark: "-bottom-16 -right-16 h-80 w-80",
-    featured: true,
-  },
-  {
-    title: "Avalanche",
-    body: "Building on the C-Chain.",
-    Icon: AvalancheIcon,
-    className: "sm:col-span-2",
-    watermark: "-bottom-12 -right-8 h-52 w-52",
-  },
-  {
-    title: "Solidity",
-    body: "Smart contracts.",
-    Icon: SiSolidity,
-    className: "",
-    watermark: "-bottom-8 -right-8 h-36 w-36",
-  },
-  {
-    title: "Team1 Türkiye",
-    body: "Collaborator.",
-    mark: "1",
-    className: "",
-    watermark: "",
-  },
+const ITEMS: Item[] = [
+  { key: "stellar", name: "Stellar", role: "Ambassador", note: "New", Icon: SiStellar },
+  { key: "avalanche", name: "Avalanche", role: "Building on the C-Chain", Icon: AvalancheIcon },
+  { key: "solidity", name: "Solidity", role: "Smart contracts", Icon: SiSolidity },
+  { key: "team1", name: "Team1 Türkiye", role: "Collaborator", mark: "1" },
 ];
 
-export default function Web3() {
-  return (
-    <section id="web3" className="border-t border-border py-24 sm:py-32">
-      <div className="mx-auto max-w-6xl px-6 sm:px-10">
-        <RevealOnScroll>
-          <SectionHeading title="Web3" />
-        </RevealOnScroll>
+const NAME_CLASS =
+  "text-[clamp(3rem,11vw,10rem)] font-semibold leading-[0.92] tracking-[-0.04em]";
 
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:auto-rows-[minmax(11rem,auto)] lg:grid-cols-4">
-          {TILES.map((tile, i) => (
-            <RevealOnScroll
-              key={tile.title}
-              delay={i * 0.07}
-              className={tile.className}
+function Glyph({ item }: { item: Item }) {
+  if (item.Icon) {
+    return <item.Icon aria-hidden className="size-[34vh] max-w-[70vw]" />;
+  }
+  return (
+    <span aria-hidden className="text-[34vh] font-semibold leading-none">
+      {item.mark}
+    </span>
+  );
+}
+
+/**
+ * The section pins to the viewport and scroll progress walks through the four
+ * entries. Progress decides the entry; the entry swaps with a mask roll.
+ */
+export default function Web3() {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduce = usePrefersReducedMotion();
+  const [index, setIndex] = useState(0);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end end"],
+  });
+
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    const next = Math.min(ITEMS.length - 1, Math.max(0, Math.floor(v * ITEMS.length)));
+    setIndex((prev) => (prev === next ? prev : next));
+  });
+
+  const item = ITEMS[index];
+
+  if (reduce) {
+    return (
+      <div ref={ref} className={`${CONTAINER} py-28 sm:py-40`}>
+        <h2 className="font-mono text-sm text-muted">Web3</h2>
+        <ul className="mt-10 divide-y divide-line border-y border-line">
+          {ITEMS.map((entry) => (
+            <li key={entry.key} className="py-8">
+              <p className={NAME_CLASS}>{entry.name}</p>
+              <p className="mt-4 font-serif text-2xl italic">{entry.role}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  return (
+    <div ref={ref} className="h-[360dvh]">
+      <div className="sticky top-0 flex h-[100dvh] flex-col justify-between overflow-hidden py-24">
+        <div className={CONTAINER}>
+          <h2 className="font-mono text-sm text-muted">Web3</h2>
+        </div>
+
+        <div className={`${CONTAINER} relative`}>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`glyph-${item.key}`}
+              aria-hidden
+              initial={{ opacity: 0, scale: 0.92 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.04 }}
+              transition={{ duration: 0.5, ease: EASE }}
+              className="pointer-events-none absolute right-6 top-1/2 -translate-y-1/2 text-fg/[0.08] sm:right-10"
             >
-              <article
-                className={`relative flex h-full min-h-[11rem] flex-col justify-between gap-10 overflow-hidden rounded-2xl border p-6 sm:p-8 ${
-                  tile.featured
-                    ? "border-accent/30 bg-gradient-to-br from-accent/20 via-surface to-surface"
-                    : "border-border bg-surface"
+              <Glyph item={item} />
+            </motion.div>
+          </AnimatePresence>
+
+          <AnimatePresence mode="wait">
+            <motion.div key={item.key} className="relative">
+              <div className="overflow-hidden pb-[0.08em]">
+                <motion.h3
+                  initial={{ y: "105%" }}
+                  animate={{ y: 0 }}
+                  exit={{ y: "-105%" }}
+                  transition={{ duration: 0.6, ease: EASE }}
+                  className={NAME_CLASS}
+                >
+                  {item.name}
+                </motion.h3>
+              </div>
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5, delay: 0.15, ease: EASE }}
+                className="mt-6 font-serif text-2xl italic sm:text-4xl"
+              >
+                {item.role}
+                {item.note && (
+                  <span className="ml-4 align-middle font-mono text-sm not-italic text-accent">
+                    {item.note}
+                  </span>
+                )}
+              </motion.p>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        <div className={`${CONTAINER} flex gap-3`}>
+          {ITEMS.map((entry, i) => (
+            <div key={entry.key} className="flex-1">
+              <span
+                className={`block h-px transition-colors duration-500 ${
+                  i <= index ? "bg-accent" : "bg-line"
+                }`}
+              />
+              <span
+                className={`mt-3 hidden font-mono text-xs transition-colors duration-500 sm:block ${
+                  i === index ? "text-fg" : "text-muted"
                 }`}
               >
-                {tile.Icon && (
-                  <tile.Icon
-                    aria-hidden
-                    className={`pointer-events-none absolute text-foreground/[0.05] ${tile.watermark}`}
-                  />
-                )}
-
-                <div className="relative flex items-center justify-between">
-                  {tile.Icon ? (
-                    <tile.Icon aria-hidden className="h-7 w-7 text-foreground" />
-                  ) : (
-                    <span
-                      aria-hidden
-                      className="text-3xl font-semibold leading-none text-foreground"
-                    >
-                      {tile.mark}
-                    </span>
-                  )}
-                  {tile.note && (
-                    <span className="text-sm text-accent">{tile.note}</span>
-                  )}
-                </div>
-
-                <div className="relative">
-                  <h3
-                    className={`font-semibold tracking-tight text-foreground ${
-                      tile.featured ? "text-3xl sm:text-4xl" : "text-xl"
-                    }`}
-                  >
-                    {tile.title}
-                  </h3>
-                  <p className="mt-2 text-sm text-muted">{tile.body}</p>
-                </div>
-              </article>
-            </RevealOnScroll>
+                {entry.name}
+              </span>
+            </div>
           ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 }

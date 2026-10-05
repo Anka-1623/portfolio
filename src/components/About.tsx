@@ -1,4 +1,9 @@
+import { CONTAINER } from "@/lib/ui";
 import RevealOnScroll from "./RevealOnScroll";
+import WordReveal from "./WordReveal";
+
+const STATEMENT =
+  "I build complete products on my own, from the database to the deploy. Now I'm taking that into Web3, writing Solidity on Avalanche and serving as a Stellar Ambassador.";
 
 const FACTS = [
   { label: "Building", value: "EduTask" },
@@ -11,28 +16,24 @@ const FACTS = [
 
 export default function About() {
   return (
-    <section id="about" className="py-24 sm:py-32">
-      <div className="mx-auto max-w-6xl px-6 sm:px-10">
-        <RevealOnScroll>
-          <h2 className="sr-only">About</h2>
-          <p className="max-w-3xl text-2xl leading-snug tracking-tight text-foreground sm:text-4xl">
-            I build complete products end to end, from database to deploy.
-            Lately I write Solidity on Avalanche, and I&apos;m a Stellar
-            Ambassador.
-          </p>
-        </RevealOnScroll>
+    <div className={CONTAINER}>
+      <h2 className="sr-only">About</h2>
+      <WordReveal
+        text={STATEMENT}
+        emphasis={["Web3", "Solidity", "Avalanche", "Stellar", "Ambassador"]}
+        className="max-w-5xl font-serif text-[clamp(2rem,4.6vw,4.4rem)] leading-[1.08] tracking-tight"
+      />
 
-        <RevealOnScroll delay={0.1}>
-          <dl className="mt-14 grid gap-8 border-t border-border pt-8 sm:grid-cols-3">
-            {FACTS.map((fact) => (
-              <div key={fact.label}>
-                <dt className="text-sm text-muted">{fact.label}</dt>
-                <dd className="mt-2 text-base text-foreground">{fact.value}</dd>
-              </div>
-            ))}
-          </dl>
-        </RevealOnScroll>
-      </div>
-    </section>
+      <RevealOnScroll delay={0.1}>
+        <dl className="mt-20 grid gap-8 border-t border-line pt-8 sm:grid-cols-3">
+          {FACTS.map((fact) => (
+            <div key={fact.label}>
+              <dt className="font-mono text-sm text-muted">{fact.label}</dt>
+              <dd className="mt-3 font-serif text-xl">{fact.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </RevealOnScroll>
+    </div>
   );
 }

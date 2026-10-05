@@ -1,62 +1,52 @@
 import { PiArrowUpRight } from "react-icons/pi";
+import { CONTAINER } from "@/lib/ui";
+import Magnetic from "./Magnetic";
+import MaskText from "./MaskText";
 import RevealOnScroll from "./RevealOnScroll";
-import SectionHeading from "./SectionHeading";
+import RollText from "./RollText";
+
+const EMAIL = "emirhansolmaz2316@gmail.com";
 
 const LINKS = [
-  {
-    label: "Email",
-    value: "emirhansolmaz2316@gmail.com",
-    href: "mailto:emirhansolmaz2316@gmail.com",
-  },
-  {
-    label: "GitHub",
-    value: "github.com/Anka-1623",
-    href: "https://github.com/Anka-1623",
-  },
-  {
-    label: "LinkedIn",
-    value: "linkedin.com/in/emirhansolmaz",
-    href: "https://www.linkedin.com/in/emirhansolmaz/",
-  },
+  { label: "GitHub", href: "https://github.com/Anka-1623" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/emirhansolmaz/" },
 ];
 
 export default function Contact() {
   return (
-    <section id="contact" className="border-t border-border py-24 sm:py-32">
-      <div className="mx-auto max-w-6xl px-6 sm:px-10">
-        <RevealOnScroll>
-          <SectionHeading title="Let's build something.">
-            Email is the fastest way to reach me.
-          </SectionHeading>
-        </RevealOnScroll>
+    <div className={CONTAINER}>
+      <MaskText
+        text="Let's build something."
+        className="text-[clamp(3rem,9.5vw,9rem)] font-semibold leading-[0.9] tracking-[-0.04em]"
+      />
 
-        <RevealOnScroll delay={0.1}>
-          <ul className="mt-12 divide-y divide-border border-t border-border">
-            {LINKS.map((link) => {
-              const external = link.href.startsWith("http");
-              return (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    target={external ? "_blank" : undefined}
-                    rel={external ? "noopener noreferrer" : undefined}
-                    className="group flex flex-col gap-1 py-5 sm:flex-row sm:items-center sm:justify-between"
-                  >
-                    <span className="text-sm text-muted">{link.label}</span>
-                    <span className="flex items-center gap-2 text-lg text-foreground transition-colors group-hover:text-accent">
-                      {link.value}
-                      <PiArrowUpRight
-                        aria-hidden
-                        className="h-5 w-5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                      />
-                    </span>
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-        </RevealOnScroll>
-      </div>
-    </section>
+      <RevealOnScroll delay={0.15} className="mt-14">
+        <Magnetic>
+          <a
+            href={`mailto:${EMAIL}`}
+            className="group inline-flex items-center gap-3 font-serif text-[clamp(1.4rem,4.4vw,3.6rem)] italic"
+          >
+            <RollText>{EMAIL}</RollText>
+            <PiArrowUpRight aria-hidden className="size-[0.8em] shrink-0" />
+          </a>
+        </Magnetic>
+
+        <ul className="mt-12 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-6 font-mono text-sm">
+          {LINKS.map((link) => (
+            <li key={link.label}>
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-1"
+              >
+                <RollText>{link.label}</RollText>
+                <PiArrowUpRight aria-hidden className="size-3.5" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </RevealOnScroll>
+    </div>
   );
 }
