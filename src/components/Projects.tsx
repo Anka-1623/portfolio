@@ -13,35 +13,44 @@ import { CONTAINER } from "@/lib/ui";
 import MaskText from "./MaskText";
 import RollText from "./RollText";
 
-const VARIANTS = [
-  {
+const TONES = {
+  dark: {
     panel: "bg-bg-2 text-fg",
     muted: "text-fg/60",
     rule: "border-fg/15",
     watermark: "text-fg/[0.05]",
+    chip: "border-fg/15 bg-fg/[0.04]",
   },
-  {
+  accent: {
     panel: "bg-accent text-ink",
     muted: "text-ink/70",
     rule: "border-ink/25",
     watermark: "text-ink/[0.1]",
+    chip: "border-ink/25 bg-ink/[0.06]",
   },
-];
+  paper: {
+    panel: "bg-paper text-ink",
+    muted: "text-ink/60",
+    rule: "border-ink/15",
+    watermark: "text-ink/[0.06]",
+    chip: "border-ink/15 bg-ink/[0.04]",
+  },
+} as const;
 
 function ProjectPanel({
   project,
-  index,
   selfRef,
   nextRef,
 }: {
   project: Project;
-  index: number;
   selfRef: RefObject<HTMLDivElement | null>;
   nextRef?: RefObject<HTMLDivElement | null>;
 }) {
   const reduce = useReducedMotion();
-  const variant = VARIANTS[index % VARIANTS.length];
+  const tone = TONES[project.tone];
   const Visual = project.visual;
+  const [primary] = project.links;
+  const singleLink = project.links.length === 1;
 
   // The panel recedes while the next one slides over it.
   const { scrollYProgress } = useScroll({
@@ -49,7 +58,9 @@ function ProjectPanel({
     offset: ["start end", "start start"],
   });
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.92]);
-  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.4]);
+  // Dim with an overlay, not opacity: a see-through panel would show the one
+  // stacked beneath it.
+  const dim = useTransform(scrollYProgress, [0, 1], [0, 0.6]);
   const recedes = Boolean(nextRef) && !reduce;
 
   const nameSize = Math.min(14, 82 / (project.name.length * 0.62));
@@ -60,29 +71,44 @@ function ProjectPanel({
       className="sticky top-0 h-[100dvh] px-3 py-14 sm:px-6 sm:py-20 xl:px-16"
     >
       <motion.article
-        style={recedes ? { scale, opacity } : undefined}
-        className={`relative flex h-full origin-top flex-col justify-between overflow-hidden rounded-[28px] p-6 sm:p-12 ${variant.panel}`}
+        style={recedes ? { scale } : undefined}
+        className={`relative flex h-full origin-top flex-col justify-between overflow-hidden rounded-[28px] p-6 sm:p-12 ${tone.panel}`}
       >
         <Visual
           aria-hidden
-          className={`pointer-events-none absolute -bottom-16 -right-10 size-[22rem] sm:size-[30rem] ${variant.watermark}`}
+          className={`pointer-events-none absolute -bottom-16 -right-10 size-[22rem] sm:size-[30rem] ${tone.watermark}`}
         />
 
-        <div className="relative flex items-start justify-between gap-6">
-          <span className={`font-mono text-sm ${variant.muted}`}>
+        {singleLink && (
+          // Makes the whole panel a link when there is a single destination.
+          <a
+            href={primary.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-hidden
+            tabIndex={-1}
+            className="absolute inset-0 z-10"
+          />
+        )}
+
+        <div className="relative z-20 flex items-start justify-between gap-6">
+          <span className={`font-mono text-sm ${tone.muted}`}>
             {project.status}
           </span>
-          {project.href && (
-            <a
-              href={project.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group inline-flex items-center gap-1 text-sm after:absolute after:inset-0 after:content-['']"
-            >
-              <RollText>GitHub</RollText>
-              <PiArrowUpRight aria-hidden className="size-4" />
-            </a>
-          )}
+          <div className="flex flex-wrap justify-end gap-x-5 gap-y-1 text-sm">
+            {project.links.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-1"
+              >
+                <RollText>{link.label}</RollText>
+                <PiArrowUpRight aria-hidden className="size-4" />
+              </a>
+            ))}
+          </div>
         </div>
 
         <div className="relative">
@@ -95,13 +121,20 @@ function ProjectPanel({
           <p className="mt-5 font-serif text-2xl italic sm:text-3xl">
             {project.tagline}
           </p>
-          <p className={`mt-4 max-w-md text-base leading-relaxed ${variant.muted}`}>
+          <p className={`mt-4 max-w-md text-base leading-relaxed ${tone.muted}`}>
             {project.description}
           </p>
+          {project.command && (
+            <code
+              className={`relative z-20 mt-5 inline-block max-w-full overflow-x-auto whitespace-nowrap rounded-lg border px-3 py-2 font-mono text-xs sm:text-sm ${tone.chip}`}
+            >
+              {project.command}
+            </code>
+          )}
         </div>
 
         <ul
-          className={`relative flex flex-wrap gap-x-6 gap-y-2 border-t pt-5 ${variant.rule}`}
+          className={`relative flex flex-wrap gap-x-6 gap-y-2 border-t pt-5 ${tone.rule}`}
         >
           {project.stack.map(({ name, Icon }) => (
             <li key={name} className="flex items-center gap-2 text-sm">
@@ -110,6 +143,14 @@ function ProjectPanel({
             </li>
           ))}
         </ul>
+
+        {recedes && (
+          <motion.div
+            aria-hidden
+            style={{ opacity: dim }}
+            className="pointer-events-none absolute inset-0 z-30 bg-ink"
+          />
+        )}
       </motion.article>
     </div>
   );
@@ -135,7 +176,6 @@ export default function Projects() {
           <ProjectPanel
             key={project.name}
             project={project}
-            index={i}
             selfRef={refs[i]}
             nextRef={refs[i + 1]}
           />
